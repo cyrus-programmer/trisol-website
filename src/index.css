@@ -1,0 +1,65 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #070818;
+  --navy: #282a72;
+  --navy-dim: rgba(40, 42, 114, 0.15);
+  --navy-mid: rgba(40, 42, 114, 0.32);
+  --navy-border: rgba(40, 42, 114, 0.48);
+  --gold: #fdbd10;
+  --gold-dim: rgba(253, 189, 16, 0.1);
+  --gold-mid: rgba(253, 189, 16, 0.2);
+  --gold-border: rgba(253, 189, 16, 0.3);
+  --gold-glow: rgba(253, 189, 16, 0.38);
+  --text: #eeeaf8;
+  --muted: rgba(238, 234, 248, 0.42);
+  --faint: rgba(255, 255, 255, 0.055);
+  --glass: rgba(255, 255, 255, 0.03);
+
+  --font-display: "Plus Jakarta Sans", sans-serif;
+  --font-body: "DM Sans", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  line-height: 1.6;
+  cursor: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (max-width: 768px) {
+  body {
+    cursor: auto;
+  }
+}
+
+::selection {
+  background: var(--gold);
+  color: var(--navy);
+}
+::-webkit-scrollbar {
+  width: 3px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--navy-border);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold-border);
+}
