@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, ChevronDown } from "lucide-react";
 
-// ─── Hexagon canvas — logo-echo, cursor-reactive ───────────────────────────
 function HexCanvas() {
   const canvasRef = useRef(null);
   const mouseRef = useRef({ x: -9999, y: -9999 });
@@ -34,7 +33,6 @@ function HexCanvas() {
             x: col * hx + offsetX,
             y: row * hy * 0.86,
             size,
-            opacity: Math.random() * 0.25 + 0.05,
             baseOpacity: Math.random() * 0.25 + 0.05,
             pulse: Math.random() * Math.PI * 2,
             pulseSpeed: 0.004 + Math.random() * 0.006,
@@ -61,23 +59,20 @@ function HexCanvas() {
     };
 
     const draw = () => {
-      const W = canvas.offsetWidth;
-      const H = canvas.offsetHeight;
+      const W = canvas.offsetWidth,
+        H = canvas.offsetHeight;
       ctx.clearRect(0, 0, W, H);
-
-      const mx = mouseRef.current.x;
-      const my = mouseRef.current.y;
+      const mx = mouseRef.current.x,
+        my = mouseRef.current.y;
       const influenceRadius = 180;
 
       hexagonsRef.current.forEach((h) => {
         h.pulse += h.pulseSpeed;
         const pulseFactor = 0.5 + 0.5 * Math.sin(h.pulse);
-
-        const dx = h.x - mx;
-        const dy = h.y - my;
+        const dx = h.x - mx,
+          dy = h.y - my;
         const dist = Math.sqrt(dx * dx + dy * dy);
         const proximity = Math.max(0, 1 - dist / influenceRadius);
-
         const finalOpacity = h.baseOpacity * pulseFactor + proximity * 0.55;
         const strokeOpacity =
           h.baseOpacity * 0.6 * pulseFactor + proximity * 0.7;
@@ -87,7 +82,6 @@ function HexCanvas() {
           hexPath(h.x, h.y, h.size - 2);
           ctx.fill();
         }
-
         ctx.strokeStyle =
           proximity > 0.3
             ? `rgba(253,189,16,${strokeOpacity * 0.8})`
@@ -96,7 +90,6 @@ function HexCanvas() {
         hexPath(h.x, h.y, h.size - 2);
         ctx.stroke();
       });
-
       rafRef.current = requestAnimationFrame(draw);
     };
 
@@ -126,13 +119,11 @@ function HexCanvas() {
   );
 }
 
-// ─── Background — enhanced with glow effects ──────────────────────────────
 function HeroBackground({ mouseX, mouseY }) {
   return (
     <div
       style={{ position: "absolute", inset: 0, overflow: "hidden", zIndex: 0 }}
     >
-      {/* Deep navy radial overhead */}
       <div
         style={{
           position: "absolute",
@@ -145,7 +136,6 @@ function HeroBackground({ mouseX, mouseY }) {
           animation: "bgBreathe 9s ease-in-out infinite",
         }}
       />
-      {/* Gold glow top-right */}
       <div
         style={{
           position: "absolute",
@@ -159,7 +149,6 @@ function HeroBackground({ mouseX, mouseY }) {
           animation: "bgFloat 13s ease-in-out infinite alternate",
         }}
       />
-      {/* Cursor-following glow */}
       <div
         style={{
           position: "absolute",
@@ -177,7 +166,6 @@ function HeroBackground({ mouseX, mouseY }) {
   );
 }
 
-// ─── Counter ───────────────────────────────────────────────────────────────
 function Counter({ target, suffix, label, delay = 0 }) {
   const [val, setVal] = useState(0);
   const ref = useRef(null);
@@ -237,7 +225,6 @@ function Counter({ target, suffix, label, delay = 0 }) {
   );
 }
 
-// ─── Main Hero ─────────────────────────────────────────────────────────────
 export default function Hero() {
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
   const heroRef = useRef(null);
@@ -277,7 +264,6 @@ export default function Hero() {
     >
       <HeroBackground mouseX={mouse.x} mouseY={mouse.y} />
 
-      {/* ── Left: copy ── */}
       <motion.div
         variants={{
           hidden: {},
@@ -292,7 +278,6 @@ export default function Hero() {
           paddingBottom: "5rem",
         }}
       >
-        {/* Eyebrow with glow */}
         <motion.div variants={item} style={{ marginBottom: "2rem" }}>
           <span
             style={{
@@ -309,8 +294,7 @@ export default function Hero() {
               fontWeight: 600,
               letterSpacing: "0.12em",
               textTransform: "uppercase",
-              boxShadow:
-                "0 0 20px rgba(253,189,16,0.15), inset 0 1px 0 rgba(253,189,16,0.1)",
+              boxShadow: "0 0 20px rgba(253,189,16,0.15)",
             }}
           >
             <span
@@ -327,7 +311,6 @@ export default function Hero() {
           </span>
         </motion.div>
 
-        {/* Headline */}
         <motion.h1
           variants={item}
           style={{
@@ -355,7 +338,6 @@ export default function Hero() {
           </span>
         </motion.h1>
 
-        {/* Sub — Much better contrast */}
         <motion.p
           variants={item}
           style={{
@@ -372,20 +354,17 @@ export default function Hero() {
           From first commit to 5 million users — we've done it 50 times.
         </motion.p>
 
-        {/* CTAs with premium styling */}
         <motion.div
           variants={item}
           style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}
         >
-          <motion.a
-            href="#contact"
-            whileHover={{ y: -3 }}
-            whileTap={{ scale: 0.97 }}
+          <a
+            href="#partnership"
             style={{
               display: "inline-flex",
               alignItems: "center",
               gap: "0.6rem",
-              background: "linear-gradient(135deg, #fdbd10 0%, #ffc929 100%)",
+              background: "#fdbd10",
               color: "#1a1c4e",
               padding: "0.95rem 2.2rem",
               borderRadius: 10,
@@ -394,34 +373,22 @@ export default function Hero() {
               fontWeight: 700,
               textDecoration: "none",
               cursor: "none",
-              boxShadow:
-                "0 0 40px rgba(253,189,16,0.4), 0 8px 32px rgba(253,189,16,0.2)",
-              transition: "all 0.3s ease",
-              position: "relative",
-              overflow: "hidden",
+              boxShadow: "0 0 32px rgba(253,189,16,0.35)",
+              transition: "background 0.2s, transform 0.2s",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.boxShadow =
-                "0 0 60px rgba(253,189,16,0.6), 0 12px 40px rgba(253,189,16,0.3)";
+              e.currentTarget.style.background = "#ffc929";
+              e.currentTarget.style.transform = "translateY(-2px)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.boxShadow =
-                "0 0 40px rgba(253,189,16,0.4), 0 8px 32px rgba(253,189,16,0.2)";
+              e.currentTarget.style.background = "#fdbd10";
+              e.currentTarget.style.transform = "translateY(0)";
             }}
           >
-            Start a Project
-            <motion.div
-              animate={{ x: [0, 4, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-            >
-              <ArrowRight size={16} />
-            </motion.div>
-          </motion.a>
-
-          <motion.a
+            Start a Project <ArrowRight size={16} />
+          </a>
+          <a
             href="#about"
-            whileHover={{ y: -3 }}
-            whileTap={{ scale: 0.97 }}
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -437,30 +404,19 @@ export default function Hero() {
               textDecoration: "none",
               cursor: "none",
               backdropFilter: "blur(12px)",
-              transition: "all 0.3s ease",
-              boxShadow:
-                "0 0 20px rgba(253,189,16,0.1), inset 0 1px 0 rgba(253,189,16,0.1)",
+              transition: "transform 0.2s",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = "rgba(253,189,16,0.4)";
-              e.currentTarget.style.background = "rgba(253,189,16,0.1)";
-              e.currentTarget.style.color = "#fff";
-              e.currentTarget.style.boxShadow =
-                "0 0 30px rgba(253,189,16,0.2), inset 0 1px 0 rgba(253,189,16,0.15)";
+              e.currentTarget.style.transform = "translateY(-2px)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = "rgba(253,189,16,0.25)";
-              e.currentTarget.style.background = "rgba(40,42,114,0.25)";
-              e.currentTarget.style.color = "#eeeaf8";
-              e.currentTarget.style.boxShadow =
-                "0 0 20px rgba(253,189,16,0.1), inset 0 1px 0 rgba(253,189,16,0.1)";
+              e.currentTarget.style.transform = "translateY(0)";
             }}
           >
             Our Story
-          </motion.a>
+          </a>
         </motion.div>
 
-        {/* Stats */}
         <motion.div
           variants={item}
           style={{
@@ -482,7 +438,6 @@ export default function Hero() {
         </motion.div>
       </motion.div>
 
-      {/* ── Right: hex canvas ── */}
       <motion.div
         initial={{ opacity: 0, scale: 0.96 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -509,7 +464,6 @@ export default function Hero() {
           <HexCanvas />
         </div>
 
-        {/* Floating logo */}
         <div
           style={{
             position: "relative",
@@ -531,7 +485,7 @@ export default function Hero() {
               borderRadius: 28,
               border: "1px solid rgba(253,189,16,0.25)",
               boxShadow:
-                "0 0 80px rgba(253,189,16,0.15), 0 0 120px rgba(40,42,114,0.4), inset 0 1px 0 rgba(255,255,255,0.08)",
+                "0 0 80px rgba(253,189,16,0.15), 0 0 120px rgba(40,42,114,0.4)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -546,7 +500,6 @@ export default function Hero() {
             />
           </motion.div>
 
-          {/* Pulse rings */}
           {[1, 2, 3].map((i) => (
             <div
               key={i}
@@ -577,7 +530,6 @@ export default function Hero() {
         />
       </motion.div>
 
-      {/* Scroll indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -605,17 +557,12 @@ export default function Hero() {
       </motion.div>
 
       <style>{`
-        @keyframes pulse    { 0%,100%{box-shadow:0 0 6px #fdbd10;transform:scale(1)} 50%{box-shadow:0 0 18px #fdbd10;transform:scale(1.4)} }
+        @keyframes pulse { 0%,100%{box-shadow:0 0 6px #fdbd10;transform:scale(1)} 50%{box-shadow:0 0 18px #fdbd10;transform:scale(1.4)} }
         @keyframes ringPulse{ 0%,100%{opacity:.5;transform:scale(1)} 50%{opacity:.15;transform:scale(1.05)} }
         @keyframes bounceDown{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(5px)} }
         @media (max-width: 900px) {
-          section[style*="grid-template-columns: 1fr 1fr"] {
-            grid-template-columns: 1fr !important;
-            padding: 0 1.5rem !important;
-          }
-          section[style*="grid-template-columns: 1fr 1fr"] > div:last-child {
-            display: none !important;
-          }
+          section[style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important; padding: 0 1.5rem !important; }
+          section[style*="grid-template-columns: 1fr 1fr"] > div:last-child { display: none !important; }
         }
       `}</style>
     </section>

@@ -1,8 +1,8 @@
-import { useRef, useState, useMemo } from "react";
+import { useState, useRef, useMemo, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import { Link } from "react-router-dom";
-import { TrendingUp, ArrowRight, Grid3x3 } from "lucide-react";
-import { allApps, TOTAL_EXIT_VALUE } from "../data/apps";
+import { ArrowLeft, Grid3x3 } from "lucide-react";
+import { allApps } from "../data/apps";
 
 function FadeIn({ children, delay = 0, style }) {
   const ref = useRef(null);
@@ -11,25 +11,16 @@ function FadeIn({ children, delay = 0, style }) {
     <motion.div
       ref={ref}
       style={style}
-      initial={{ opacity: 0, y: 26 }}
+      initial={{ opacity: 0, y: 24 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
     >
       {children}
     </motion.div>
   );
 }
 
-// Always show both flagships, then fill the rest of a 6-card grid with a
-// random sample from the remaining catalogue (reshuffles on every page load).
-function pickHomepageApps() {
-  const flagships = allApps.filter((a) => a.flagship);
-  const rest = allApps.filter((a) => !a.flagship);
-  const shuffled = [...rest].sort(() => Math.random() - 0.5);
-  return [...flagships, ...shuffled.slice(0, 4)];
-}
-
-function AppCard({ app, index }) {
+function ProductCard({ app, index }) {
   const cardRef = useRef(null);
   const [imageLoaded, setImageLoaded] = useState(false);
   const onMove = (e) => {
@@ -40,7 +31,17 @@ function AppCard({ app, index }) {
   const flagshipLabel = app.flagship ? "Flagship" : null;
 
   return (
-    <FadeIn delay={index * 0.055}>
+    <motion.div
+      layout
+      initial={{ opacity: 0, scale: 0.97 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.97 }}
+      transition={{
+        duration: 0.3,
+        delay: index * 0.025,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+    >
       <div
         ref={cardRef}
         onMouseMove={onMove}
@@ -249,24 +250,59 @@ function AppCard({ app, index }) {
         .app-card--featured:hover { border-color: rgba(253,189,16,0.45) !important; }
         @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.6; } }
       `}</style>
-    </FadeIn>
+    </motion.div>
   );
 }
 
-export default function Apps() {
-  const homepageApps = useMemo(pickHomepageApps, []);
+export default function Products() {
+  const [filter, setFilter] = useState("All");
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const categories = useMemo(
+    () => ["All", ...new Set(allApps.map((a) => a.category))],
+    [],
+  );
+  const filtered = useMemo(
+    () =>
+      filter === "All" ? allApps : allApps.filter((a) => a.category === filter),
+    [filter],
+  );
 
   return (
-    <section
-      id="apps"
-      style={{
-        padding: "8rem 4rem",
-        borderTop: "1px solid rgba(255,255,255,0.05)",
-      }}
-    >
-      <div style={{ maxWidth: 1300, margin: "0 auto" }}>
+    <div style={{ minHeight: "100vh", paddingTop: "7rem" }}>
+      <div
+        style={{ maxWidth: 1300, margin: "0 auto", padding: "2rem 4rem 8rem" }}
+        className="products-wrap"
+      >
         <FadeIn>
-          <div style={{ marginBottom: "3.5rem" }}>
+          <Link
+            to="/"
+            data-cursor
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              color: "rgba(238,234,248,0.45)",
+              fontFamily: "var(--font-body)",
+              fontSize: "0.85rem",
+              textDecoration: "none",
+              marginBottom: "2.5rem",
+              transition: "color 0.2s",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#fdbd10")}
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.color = "rgba(238,234,248,0.45)")
+            }
+          >
+            <ArrowLeft size={15} /> Back to home
+          </Link>
+        </FadeIn>
+
+        <FadeIn delay={0.05}>
+          <div style={{ marginBottom: "3rem" }}>
             <div
               style={{
                 fontSize: "0.68rem",
@@ -278,177 +314,113 @@ export default function Apps() {
                 marginBottom: "0.75rem",
               }}
             >
-              Portfolio
+              Full Catalogue
             </div>
-            <h2
+            <h1
               style={{
                 fontFamily: "var(--font-display)",
                 fontWeight: 800,
-                fontSize: "clamp(2rem, 3.8vw, 3rem)",
-                letterSpacing: "-1px",
+                fontSize: "clamp(2.2rem, 4.5vw, 3.4rem)",
+                letterSpacing: "-1.2px",
                 color: "#fff",
-                lineHeight: 1.08,
-                marginBottom: "0.9rem",
+                lineHeight: 1.06,
+                marginBottom: "1rem",
               }}
             >
-              Apps we've shipped
-            </h2>
+              Every product we've shipped
+            </h1>
             <p
               style={{
                 fontFamily: "var(--font-body)",
                 fontWeight: 300,
-                fontSize: "1rem",
+                fontSize: "1.02rem",
                 color: "rgba(238,234,248,0.48)",
-                maxWidth: 500,
+                maxWidth: 560,
                 lineHeight: 1.78,
               }}
             >
-              From utility tools to AI-powered generators — {allApps.length}+
-              apps built, scaled and monetised across two studios.
+              {allApps.length} apps across two studios — TriApp Techs and Brown
+              Berry. Filter by category to explore the full portfolio.
             </p>
           </div>
         </FadeIn>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: "1.1rem",
-            marginBottom: "2.5rem",
-          }}
-          className="apps-grid"
-        >
-          {homepageApps.map((app, i) => (
-            <AppCard key={app.name} app={app} index={i} />
-          ))}
-        </div>
-
-        {/* See all products button */}
         <FadeIn delay={0.1}>
           <div
             style={{
               display: "flex",
-              justifyContent: "center",
-              marginBottom: "4rem",
+              gap: "0.6rem",
+              flexWrap: "wrap",
+              marginBottom: "3rem",
             }}
           >
-            <Link
-              to="/products"
-              data-cursor
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "0.5rem",
-                background: "rgba(253,189,16,0.08)",
-                border: "1px solid rgba(253,189,16,0.25)",
-                color: "#fdbd10",
-                padding: "0.8rem 1.8rem",
-                borderRadius: 10,
-                fontFamily: "var(--font-body)",
-                fontSize: "0.88rem",
-                fontWeight: 600,
-                textDecoration: "none",
-                cursor: "none",
-                transition: "background 0.2s, transform 0.2s",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "rgba(253,189,16,0.15)";
-                e.currentTarget.style.transform = "translateY(-2px)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "rgba(253,189,16,0.08)";
-                e.currentTarget.style.transform = "translateY(0)";
-              }}
-            >
-              See all products <ArrowRight size={15} />
-            </Link>
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                data-cursor
+                onClick={() => setFilter(cat)}
+                style={{
+                  background:
+                    filter === cat
+                      ? "rgba(253,189,16,0.15)"
+                      : "rgba(40,42,114,0.1)",
+                  border: `1px solid ${filter === cat ? "rgba(253,189,16,0.4)" : "rgba(40,42,114,0.3)"}`,
+                  color: filter === cat ? "#fdbd10" : "rgba(238,234,248,0.5)",
+                  padding: "0.55rem 1.3rem",
+                  borderRadius: 100,
+                  fontFamily: "var(--font-body)",
+                  fontSize: "0.85rem",
+                  fontWeight: 500,
+                  cursor: "none",
+                  transition: "background 0.2s, border-color 0.2s, color 0.2s",
+                }}
+              >
+                {cat}{" "}
+                {cat !== "All" && (
+                  <span style={{ opacity: 0.5, fontSize: "0.78rem" }}>
+                    ({allApps.filter((a) => a.category === cat).length})
+                  </span>
+                )}
+              </button>
+            ))}
           </div>
         </FadeIn>
 
-        {/* Total exit value */}
-        <FadeIn delay={0.15}>
+        <motion.div
+          layout
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: "1.1rem",
+          }}
+          className="products-grid"
+        >
+          {filtered.map((app, i) => (
+            <ProductCard key={app.name} app={app} index={i} />
+          ))}
+        </motion.div>
+
+        {filtered.length === 0 && (
           <div
             style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              flexWrap: "wrap",
-              gap: "1.5rem",
-              background: "rgba(253,189,16,0.07)",
-              border: "1px solid rgba(253,189,16,0.22)",
-              borderRadius: 18,
-              padding: "1.8rem 2.2rem",
-              backdropFilter: "blur(14px)",
+              textAlign: "center",
+              padding: "4rem 0",
+              color: "rgba(238,234,248,0.4)",
+              fontFamily: "var(--font-body)",
             }}
           >
-            <div
-              style={{ display: "flex", alignItems: "center", gap: "1.1rem" }}
-            >
-              <div
-                style={{
-                  width: 48,
-                  height: 48,
-                  borderRadius: 12,
-                  flexShrink: 0,
-                  background: "rgba(253,189,16,0.12)",
-                  border: "1px solid rgba(253,189,16,0.28)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <TrendingUp size={22} color="#fdbd10" strokeWidth={1.7} />
-              </div>
-              <div>
-                <div
-                  style={{
-                    fontFamily: "var(--font-display)",
-                    fontWeight: 800,
-                    fontSize: "1.7rem",
-                    color: "#fdbd10",
-                    letterSpacing: "-0.6px",
-                    lineHeight: 1,
-                  }}
-                >
-                  ${TOTAL_EXIT_VALUE}
-                </div>
-                <div
-                  style={{
-                    fontFamily: "var(--font-body)",
-                    fontSize: "0.78rem",
-                    color: "rgba(238,234,248,0.45)",
-                    marginTop: "0.3rem",
-                  }}
-                >
-                  Total value across 15+ successful app exits and acquisitions
-                </div>
-              </div>
-            </div>
-            <a
-              href="#partnership"
-              data-cursor
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "0.5rem",
-                color: "#fdbd10",
-                fontFamily: "var(--font-body)",
-                fontSize: "0.85rem",
-                fontWeight: 600,
-                textDecoration: "none",
-                whiteSpace: "nowrap",
-              }}
-            >
-              Interested in acquiring? <ArrowRight size={15} />
-            </a>
+            No products in this category yet.
           </div>
-        </FadeIn>
+        )}
       </div>
 
       <style>{`
-        @media (max-width: 1100px) { .apps-grid { grid-template-columns: repeat(2, 1fr) !important; } }
-        @media (max-width: 700px) { .apps-grid { grid-template-columns: 1fr !important; } #apps { padding: 5rem 1.5rem !important; } }
+        @media (max-width: 1100px) { .products-grid { grid-template-columns: repeat(2, 1fr) !important; } }
+        @media (max-width: 700px) {
+          .products-grid { grid-template-columns: 1fr !important; }
+          .products-wrap { padding: 2rem 1.5rem 5rem !important; }
+        }
       `}</style>
-    </section>
+    </div>
   );
 }
