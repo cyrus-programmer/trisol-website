@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import logo from "../assets/Logo.png";
 
 const links = [
   { label: "Apps", href: "#apps", isHash: true },
@@ -80,7 +81,7 @@ export default function Navbar() {
           }}
         >
           <img
-            src="/Logo.png"
+            src={logo}
             alt="Trisol"
             style={{ width: "68%", height: "68%", objectFit: "contain" }}
           />
