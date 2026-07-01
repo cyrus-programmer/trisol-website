@@ -80,12 +80,9 @@ export default function Navbar() {
           }}
         >
           <img
-            src="https://trisoltechnologies.com/wp-content/uploads/2024/07/cropped-Logo-copy-2.png"
+            src="/Logo.png"
             alt="Trisol"
             style={{ width: "68%", height: "68%", objectFit: "contain" }}
-            onError={(e) => {
-              e.target.style.display = "none";
-            }}
           />
         </div>
         <div

@@ -493,10 +493,9 @@ export default function Hero() {
             }}
           >
             <img
-              src="https://trisoltechnologies.com/wp-content/uploads/2024/07/cropped-Logo-copy-2.png"
+              src="/Logo.png"
               alt="Trisol"
               style={{ width: "100%", height: "100%", objectFit: "contain" }}
-              onError={(e) => (e.target.style.display = "none")}
             />
           </motion.div>
 

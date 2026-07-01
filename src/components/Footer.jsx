@@ -33,12 +33,9 @@ export default function Footer() {
         }}
       >
         <img
-          src="https://trisoltechnologies.com/wp-content/uploads/2024/07/cropped-Logo-copy-2.png"
+          src="/Logo.png"
           alt="Trisol"
           style={{ width: 26, height: 26, objectFit: "contain" }}
-          onError={(e) => {
-            e.target.style.display = "none";
-          }}
         />
         <span
           style={{
